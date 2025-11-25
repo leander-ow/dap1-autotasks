@@ -1,6 +1,6 @@
 # DAP1 Autotasks
 
-Dieses Script lädt automatisch die DAP1-Praktikumsaufgaben vom Moodle der TU Dortmund herunter, speichert sie lokal als `.md` Aufgabenbeschreibung) und `.cpp` (Coderahmen) und pusht sie direkt in ein GitHub-Repository. Um die Aufgaben anschließend zu bearbeiten, genügt ein einfacher `git pull`.
+Dieses Script lädt automatisch die DAP1-Praktikumsaufgaben vom Moodle der TU Dortmund herunter, speichert sie lokal als `.md` (Aufgabenbeschreibung) und `.cpp` (Coderahmen) und pusht sie direkt in ein GitHub-Repository. Um die Aufgaben anschließend zu bearbeiten, genügt ein einfacher `git pull`.
 
 ## Features
 
