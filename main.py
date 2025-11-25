@@ -54,7 +54,7 @@ def git_push(repo_path=".", branch="main"):
     """Executes git push origin <branch>"""
     subprocess.run(["git", "-C", repo_path, "push", "origin", branch], check=True)
 
-# moodle login
+os.chdir(os.path.dirname(__file__))
 
 load_dotenv()
 user = os.getenv("SSO_USER") or input("Username: ")
@@ -66,6 +66,7 @@ base_path = repo + "/" + base
 
 m = Moodle()
 
+# moodle login
 print("Logging in...")
 m.login(user, password)
 print("Done")
