@@ -48,7 +48,7 @@ BASE=<Pfad_zum_Aufgabenordner_in_deinem_repository>
 ```
 python main.py
 ```
-Am besten automatisch am Samstagmorgen ausführen.
+Am besten automatisch jeden Freitag um 10 Uhr ausführen.
 
 ## Struktur im DAP1 Repository
 
