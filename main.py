@@ -112,7 +112,7 @@ for assignment_link in assignment_links:
         continue
 
     # get html
-    html = m.extract_assignment_content(assignment_link["url"])
+    html, code_from_file = m.extract_assignment_content(assignment_link["url"])
     text = extract_text(html)
     code_frame = extract_code_frame(html)
 
@@ -128,7 +128,9 @@ for assignment_link in assignment_links:
     if not cpp_exists:
         print("   write:", cpp_path)
         with open(cpp_path, "w", encoding="utf-8") as f:
-            if code_frame:
+            if code_from_file:
+                f.write(code_from_file)
+            elif code_frame:
                 f.write(code_frame)
             else:
                 f.write("// TODO\n")

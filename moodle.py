@@ -91,13 +91,30 @@ class Moodle:
         self.driver.get(assignment_url)
         time.sleep(1)
 
+        code_from_file = None
+        try:
+            links = self.driver.find_elements(By.CSS_SELECTOR, "a[href*='pluginfile.php']")
+            cpp_link = None
+            for a in links:
+                href = a.get_attribute("href")
+                if href and ".cpp" in href.lower():
+                    cpp_link = href
+                    break
+
+            if cpp_link:
+                r = requests.get(cpp_link, cookies=self.cookies)
+                if r.status_code == 200:
+                    code_from_file = r.text
+        except:
+            pass
+
         try:
             content_el = self.driver.find_element(By.CSS_SELECTOR, ".box")
             content_html = content_el.get_attribute("innerHTML")
         except:
             content_html = "No content found"
-        
-        return content_html
+
+        return content_html, code_from_file
 
     def close(self):
         self.logout()
