@@ -8,7 +8,7 @@ from moodle import *
 from getpass import getpass
 from bs4 import BeautifulSoup, Comment
 
-# DEBUG CONFIG
+# DEV CONFIG
 NO_GIT = False
 
 # Helper functions
