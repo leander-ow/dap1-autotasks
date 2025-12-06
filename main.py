@@ -16,6 +16,9 @@ def extract_text(html):
     """
     soup = BeautifulSoup(html, "html.parser")
 
+    for div in soup.find_all(id=re.compile(r"^assign_files_tree")):
+        div.decompose()
+
     converter = html2text.HTML2Text()
     converter.body_width = 0            # never wrap lines
     converter.ignore_links = False      # Keep links
