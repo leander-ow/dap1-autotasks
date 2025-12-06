@@ -138,9 +138,9 @@ for assignment_link in assignment_links:
             
     # git workflow
     try:
+        commit_msg = f"Programmieraufgabe {week}.{number}: init"
         if not no_git:
             git_add(repo)
-            commit_msg = f"Programmieraufgabe {week}.{number}: init"
             git_commit(repo, commit_msg)
             git_push(repo)
             print(f"✓ pushed {week}.{number} to GitHub")
