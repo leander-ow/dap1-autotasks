@@ -8,6 +8,9 @@ from moodle import *
 from getpass import getpass
 from bs4 import BeautifulSoup, Comment
 
+# DEBUG CONFIG
+NO_GIT = False
+
 # Helper functions
 
 def extract_text(html):
@@ -83,7 +86,7 @@ if 'courses' in sys.argv:
     sys.exit(1)
 
 # git pull
-git_pull(repo)
+if not NO_GIT: git_pull(repo)
 
 assignment_links = m.extract_assignment_links(course_id)
 
@@ -137,11 +140,14 @@ for assignment_link in assignment_links:
             
     # git workflow
     try:
-        git_add(repo)
-        commit_msg = f"Programmieraufgabe {week}.{number}: init"
-        git_commit(repo, commit_msg)
-        git_push(repo)
-        print(f"✓ pushed {week}.{number} to GitHub")
+        if not NO_GIT:
+            git_add(repo)
+            commit_msg = f"Programmieraufgabe {week}.{number}: init"
+            git_commit(repo, commit_msg)
+            git_push(repo)
+            print(f"✓ pushed {week}.{number} to GitHub")
+        else:
+            print(f"[SKIP GIT] Would have committed {commit_msg}")
     except subprocess.CalledProcessError as e:
         print("Git operation failed:", e)
         break
