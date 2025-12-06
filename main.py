@@ -8,9 +8,6 @@ from moodle import *
 from getpass import getpass
 from bs4 import BeautifulSoup, Comment
 
-# DEV CONFIG
-NO_GIT = False
-
 # Helper functions
 
 def extract_text(html):
@@ -66,6 +63,7 @@ course_id = os.getenv("COURSE_ID") or "54815"
 repo = os.getenv("REPO") or "dap1"
 base = os.getenv("BASE") or "Programmieraufgaben"
 base_path = repo + "/" + base
+no_git = os.getenv("NO_GIT") or False
 
 m = Moodle()
 
@@ -86,7 +84,7 @@ if 'courses' in sys.argv:
     sys.exit(1)
 
 # git pull
-if not NO_GIT: git_pull(repo)
+if not no_git: git_pull(repo)
 
 assignment_links = m.extract_assignment_links(course_id)
 
@@ -140,7 +138,7 @@ for assignment_link in assignment_links:
             
     # git workflow
     try:
-        if not NO_GIT:
+        if not no_git:
             git_add(repo)
             commit_msg = f"Programmieraufgabe {week}.{number}: init"
             git_commit(repo, commit_msg)
