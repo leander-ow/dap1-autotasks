@@ -102,42 +102,67 @@ for assignment_link in assignment_links:
 
     week, number = match.groups()
     week = f"{int(week):02d}"
-    ordner = os.path.join(base_path, week)
-    os.makedirs(ordner, exist_ok=True)
+    week_folder = os.path.join(base_path, week)
+    os.makedirs(week_folder, exist_ok=True)
 
-    cpp_path = os.path.join(ordner, f"{number}.cpp")
-    md_path  = os.path.join(ordner, f"{number}.md")
+    cpp_path = os.path.join(week_folder, f"{number}.cpp")
+    md_path  = os.path.join(week_folder, f"{number}.md")
 
     cpp_exists = os.path.exists(cpp_path)
     md_exists  = os.path.exists(md_path)
 
-    if cpp_exists and md_exists:
+    subdir = os.path.join(week_folder, number)
+    subdir_exists = os.path.isdir(subdir)
+
+    if (cpp_exists and md_exists) or subdir_exists:
         print(f"✓ {week}.{number}: exists")
         continue
 
     # get html
-    html, code_from_file = m.extract_assignment_content(assignment_link["url"])
+    html, code_files = m.extract_assignment_content(assignment_link["url"])
     text = extract_text(html)
     code_frame = extract_code_frame(html)
 
-    print(f"→ write files for {week}.{number} ...")
+    if code_files:
+        # Case A: Code from files
+        subdir = os.path.join(week_folder, number)
+        os.makedirs(subdir, exist_ok=True)
 
-    # markdown
-    if not md_exists:
-        print("   write:", md_path)
-        with open(md_path, "w", encoding="utf-8") as f:
-            f.write(text)
+        print(f"→ write files for {week}.{number} into subfolder {subdir}")
 
-    # cpp
-    if not cpp_exists:
-        print("   write:", cpp_path)
-        with open(cpp_path, "w", encoding="utf-8") as f:
-            if code_from_file:
-                f.write(code_from_file)
-            elif code_frame:
-                f.write(code_frame)
-            else:
-                f.write("// TODO\n")
+        # markdown
+        md_target = os.path.join(subdir, f"Aufgabenstellung.md")
+        if not os.path.exists(md_target):
+            print("   write:", md_target)
+            with open(md_target, "w", encoding="utf-8") as f:
+                f.write(text)
+
+        # cpp / hpp
+        for filename, content in code_files.items():
+            clean_filename = filename.split("?")[0]
+            file_path = os.path.join(subdir, clean_filename)
+            print("   write:", file_path)
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
+
+    else:
+        # Case B: Code from html
+        print(f"→ write files for {week}.{number} ...")
+
+        # markdown
+        if not md_exists:
+            print("   write:", md_path)
+            with open(md_path, "w", encoding="utf-8") as f:
+                f.write(text)
+
+        # cpp
+        if not cpp_exists:
+            print("   write:", cpp_path)
+            with open(cpp_path, "w", encoding="utf-8") as f:
+                if code_frame:
+                    f.write(code_frame)
+                else:
+                    f.write("// TODO\n")
             
     # git workflow
     try:
