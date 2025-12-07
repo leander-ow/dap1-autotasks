@@ -97,10 +97,10 @@ class Moodle:
             links = self.driver.find_elements(By.CSS_SELECTOR, "a[href*='pluginfile.php']")
             target_links = []
             for a in links:
+                href = a.get_attribute("href")
                 if not href:
                     continue
-                href = a.get_attribute("href")
-                if href.lower().endswith(".cpp") or href.lower().endswith(".hpp"):
+                if ".cpp" in href.lower() or ".hpp" in href.lower():
                     target_links.append(href)
 
             for file_url in target_links:
