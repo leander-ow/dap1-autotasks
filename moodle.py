@@ -91,22 +91,25 @@ class Moodle:
         self.driver.get(assignment_url)
         time.sleep(1)
 
-        code_from_file = None
+        code_files = {}
+
         try:
             links = self.driver.find_elements(By.CSS_SELECTOR, "a[href*='pluginfile.php']")
-            cpp_link = None
+            target_links = []
             for a in links:
+                if not href:
+                    continue
                 href = a.get_attribute("href")
-                if href and ".cpp" in href.lower():
-                    cpp_link = href
-                    break
+                if href.lower().endswith(".cpp") or href.lower().endswith(".hpp"):
+                    target_links.append(href)
 
-            if cpp_link:
-                r = requests.get(cpp_link, cookies=self.cookies)
+            for file_url in target_links:
+                r = requests.get(file_url, cookies=self.cookies)
                 if r.status_code == 200:
-                    code_from_file = r.text
-        except:
-            pass
+                    filename = file_url.split("/")[-1]
+                    code_files[filename] = r.text
+        except Exception as e:
+            print("Error downloading files:", e)
 
         try:
             content_el = self.driver.find_element(By.CSS_SELECTOR, ".box")
@@ -114,7 +117,7 @@ class Moodle:
         except:
             content_html = "No content found"
 
-        return content_html, code_from_file
+        return content_html, code_files
 
     def close(self):
         self.logout()
