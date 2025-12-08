@@ -91,16 +91,20 @@ class Moodle:
         self.driver.get(assignment_url)
         time.sleep(1)
 
+        try:
+            content_el = self.driver.find_element(By.CSS_SELECTOR, ".box")
+            content_html = content_el.get_attribute("innerHTML")
+        except:
+            content_html = "No content found"
+
         code_files = {}
 
         try:
-            links = self.driver.find_elements(By.CSS_SELECTOR, "a[href*='pluginfile.php']")
+            links = content_el.find_elements(By.CSS_SELECTOR, "a[href*='pluginfile.php']")
             target_links = []
             for a in links:
                 href = a.get_attribute("href")
-                if not href:
-                    continue
-                if ".cpp" in href.lower() or ".hpp" in href.lower():
+                if href and (".cpp" in href.lower() or ".hpp" in href.lower()):
                     target_links.append(href)
 
             for file_url in target_links:
@@ -110,12 +114,6 @@ class Moodle:
                     code_files[filename] = r.text
         except Exception as e:
             print("Error downloading files:", e)
-
-        try:
-            content_el = self.driver.find_element(By.CSS_SELECTOR, ".box")
-            content_html = content_el.get_attribute("innerHTML")
-        except:
-            content_html = "No content found"
 
         return content_html, code_files
 
