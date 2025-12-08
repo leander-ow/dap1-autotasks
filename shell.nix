@@ -7,7 +7,7 @@ in pkgs.mkShell {
     (pkgs.python3.withPackages (python-pkgs: with python-pkgs; [
         selenium
         requests
-        html2text
+        markdownify
         beautifulsoup4
         python-dotenv
     ]))

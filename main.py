@@ -2,7 +2,7 @@ import sys
 import os
 import re
 import subprocess
-import html2text
+from markdownify import markdownify as md
 from dotenv import load_dotenv
 from moodle import *
 from getpass import getpass
@@ -19,16 +19,9 @@ def extract_text(html):
     for div in soup.find_all(id=re.compile(r"^assign_files_tree")):
         div.decompose()
 
-    converter = html2text.HTML2Text()
-    converter.body_width = 0            # never wrap lines
-    converter.ignore_links = False      # Keep links
+    markdown = md(str(soup)).strip()
 
-    markdown = converter.handle(str(soup))
-
-    # remove duplicate blank lines
-    markdown = "\n".join(line.rstrip() for line in markdown.splitlines())
-
-    return markdown.strip()
+    return markdown
 
 def extract_code_frame(html):
     """
