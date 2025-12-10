@@ -1,5 +1,5 @@
 selenium
 requests
-html2text
+markdownify
 beautifulsoup4
 python-dotenv
