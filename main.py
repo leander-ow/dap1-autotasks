@@ -10,11 +10,23 @@ from bs4 import BeautifulSoup, Comment
 
 # Helper functions
 
+def remove_traps(soup):
+    """
+    Removes hidden elements from HTML to avoid traps.
+    """
+    for el in soup.find_all(style=True):
+        style = el['style'].replace(" ", "").lower()
+        if any(x in style for x in ['display:none', 'visibility:hidden', 'opacity:0']):
+            el.decompose()
+    return soup
+
 def extract_text(html):
     """
     Converts HTML content into Markdown.
     """
     soup = BeautifulSoup(html, "html.parser")
+
+    soup = remove_traps(soup)
 
     for div in soup.find_all(id=re.compile(r"^assign_files_tree")):
         div.decompose()
@@ -29,6 +41,7 @@ def extract_code_frame(html):
     Returns None if none exists.
     """
     soup = BeautifulSoup(html, "html.parser")
+    soup = remove_traps(soup)
     code = soup.find("pre")
     if code:
         return code.get_text()
